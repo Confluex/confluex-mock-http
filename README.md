@@ -130,13 +130,8 @@ Maven Artifact:
 
 ```xml
 <dependency>
-    <groupId>com.confluex.mule</groupId>
+    <groupId>com.confluex</groupId>
     <artifactId>confluex-test-http</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
-</dependency>
-<dependency>
-    <groupId>com.confluex.mule</groupId>
-    <artifactId>confluex-test-notifications</artifactId>
     <version>0.1.0-SNAPSHOT</version>
 </dependency>
 ```
