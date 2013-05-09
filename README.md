@@ -136,24 +136,7 @@ Maven Artifact:
 </dependency>
 ```
 
-We're actively working on getting this project into the maven central repository. Until then, you can build it from
-source or artifacts may be retrieved from the Sonatype maven repository.
-
-```xml
-    <repositories>
-        <repository>
-            <id>sonatype-public</id>
-            <name>Sonatype OSS Maven Repo (snapshots)</name>
-            <url>https://oss.sonatype.org/content/groups/public</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </repository>
-    </repositories>
-```
+The artifacts are available in the [Maven Central Repository](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22confluex-mock-http%22).
 
 # License
 
