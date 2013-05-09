@@ -10,8 +10,8 @@ the API until it reaches 1.0 status. Of course, we'll try to keep breaking chang
 
 **Table of Contents**
 
-* [Example Usage] (#Usage)
-* [Using the Extensions] (#using-the-extensions)
+* [Example Usage] (#example-usage)
+* [Maven Information] (#maven-information)
 * [License] (#License)
 
 **Groovy Examples**
@@ -19,7 +19,7 @@ the API until it reaches 1.0 status. Of course, we'll try to keep breaking chang
 Most of the examples documented here are using Groovy instead of Java. Feel free to use Java if you wish. There is
 no Groovy requirement (your Mule container comes with Groovy and you should really check it out though!).
 
-## Usage
+## Example Usage
 
 The following demonstrates a Junit test case which creates an embedded Jetty server and uses the MockHttpRequestHandler
 to setup mock responses to HTTP calls from clients and verification of the interaction with the server.
@@ -124,7 +124,7 @@ class MockJettyHttpServerIntegrationTest {
 
 
 
-# Using the Extensions
+# Maven Information
 
 Maven Artifact:
 
