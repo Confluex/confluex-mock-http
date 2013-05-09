@@ -10,9 +10,9 @@
     <url>https://github.com/Confluex/confluex-mock-http</url>
     <description>Testing library for mocking interactions to external HTTP servers</description>
     <scm>
-        <url>git@github.com:Confluex/confluex-mock-http.git</url>
-        <connection>git@github.com:Confluex/confluex-mock-http.git</connection>
-        <developerConnection>git@github.com:Confluex/confluex-mock-http.git</developerConnection>
+        <url>scm:git:git@github.com:Confluex/confluex-mock-http.git</url>
+        <connection>scm:git:git@github.com:Confluex/confluex-mock-http.git</connection>
+        <developerConnection>scm:git:git@github.com:Confluex/confluex-mock-http.git</developerConnection>
     </scm>
     <licenses>
         <license>
