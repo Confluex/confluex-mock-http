@@ -1,9 +1,9 @@
-[![Build Status](https://travis-ci.org/Confluex/confluex-mule-extensions.png?branch=master)](https://travis-ci.org/Confluex/confluex-mule-extensions)
+[![Build Status](https://travis-ci.org/Confluex/confluex-mock-http.png?branch=master)](https://travis-ci.org/Confluex/confluex-mock-http)
 
 # Confluex Mock HTTP API
 
-Mock HTTP testing library for mocking out interaction to HTTP endpoints from within Mule FunctionalTestCase (although
-it could be used without mule at all).
+Mock HTTP testing library for stubbing HTTP responses from text or resources on the classpath (xml files, etc.) and
+verification of client behavior and state.
 
 This library is still under heavy development. Feel free to use, contribute but there could be changes to
 the API until it reaches 1.0 status. Of course, we'll try to keep breaking changes to a minimum.
@@ -17,7 +17,7 @@ the API until it reaches 1.0 status. Of course, we'll try to keep breaking chang
 **Groovy Examples**
 
 Most of the examples documented here are using Groovy instead of Java. Feel free to use Java if you wish. There is
-no Groovy requirement (your Mule container comes with Groovy and you should really check it out though!).
+no Groovy requirement (Groovy is great and you should really check it out though!).
 
 ## Example Usage
 
