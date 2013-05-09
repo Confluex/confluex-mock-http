@@ -1,0 +1,3 @@
+language: groovy
+install: "mvn clean compile"
+script: "mvn -U test"
