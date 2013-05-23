@@ -131,8 +131,9 @@ Maven Artifact:
 ```xml
 <dependency>
     <groupId>com.confluex</groupId>
-    <artifactId>confluex-test-http</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <artifactId>confluex-mock-http</artifactId>
+    <version>0.1.0</version>
+    <scope>test</scope>
 </dependency>
 ```
 
