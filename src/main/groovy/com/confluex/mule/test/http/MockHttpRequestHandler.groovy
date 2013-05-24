@@ -5,6 +5,7 @@ import com.confluex.mule.test.http.captor.RequestCaptor
 import com.confluex.mule.test.http.event.DefaultEventLatch
 import com.confluex.mule.test.http.event.EventLatch
 import com.confluex.mule.test.http.expectations.Expectation
+import groovy.transform.ToString
 import org.mortbay.jetty.handler.AbstractHandler
 import org.springframework.core.io.ClassPathResource
 import org.springframework.core.io.Resource
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletResponse
 
 import static org.junit.Assert.*
 
+@ToString(includeNames = true, includes = "mappings, currentMapping")
 class MockHttpRequestHandler extends AbstractHandler implements EventLatch {
     RequestCaptor currentMapping;
     Map<String, RequestCaptor> mappings = [:]
