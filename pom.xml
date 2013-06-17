@@ -3,7 +3,7 @@
 
     <groupId>com.confluex</groupId>
     <artifactId>confluex-mock-http</artifactId>
-    <version>1.2.0-SNAPSHOT</version>
+    <version>0.2.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Confluex: Mock HTTP Testing API</name>
     <url>https://github.com/Confluex/confluex-mock-http</url>
