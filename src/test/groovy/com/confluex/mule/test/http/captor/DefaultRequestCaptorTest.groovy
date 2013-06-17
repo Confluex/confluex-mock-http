@@ -57,4 +57,17 @@ class DefaultRequestCaptorTest {
         assert mapping.requests.size() == requests.size()
     }
 
+    @Test
+    void shouldCaptureQueryString() {
+        def request = new MockHttpServletRequest()
+        def expectedQueryString = 'first=1&second=%282%29'
+
+        request.setQueryString(expectedQueryString)
+        mapping.render(request, new MockHttpServletResponse())
+
+        assert expectedQueryString == mapping.requests[0].queryString
+        assert '1' == mapping.requests[0].queryParams['first']
+        assert '(2)' == mapping.requests[0].queryParams['second']
+    }
+
 }
