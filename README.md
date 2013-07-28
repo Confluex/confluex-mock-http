@@ -21,7 +21,7 @@ no Groovy requirement (Groovy is great and you should really check it out though
 
 ## Example Usage
 
-_Hello World_
+### Hello World
 
 The simplest usage of this library is to create a MockHttpServer, and set it up to respond the same regardless of
 what requests it receives.  Once you have instantiated the MockHttpServer, it is listening on localhost on the port
@@ -41,7 +41,7 @@ server.stop()
 
 ```
 
-_Handling different paths_
+### Handling different paths
 
 You can instruct the MockHttpServer to respond to specific paths.  When a requests does not match anything, the
 server responds with a 404 status code.  When you use respondTo to match HTTP requests, the server responds with status
@@ -55,7 +55,7 @@ server.respondTo(path('/blog/create-post.php')).withStatus(201).withBody('Create
 
 ```
 
-_Doing more with the response_
+### Doing more with the response
 
 You can control the response status, body, and headers
 
@@ -69,19 +69,22 @@ server.respondTo(path('/not-found'))
 
 ```
 
-_Asserting on request information_
+### Asserting on request information
 
 In order to make sure the HTTP client sent the requests you expected, you can find out what requests the server received.
 
 ```groovy
 
+assertEquals(3, server.requests.size())
+
 ClientRequest request = server.requests.find() { it.method == 'GET' && it.path == '/widget/inventory' }
+
 assertNotNull(request)
-assertEquals('application/json', request.header['Content-Type']
+assertEquals('application/json', request.header['Content-Type'])
 
 ```
 
-_Finding an available port_
+### Finding an available port
 
 If you don't particularly care what port the HTTP server listens to, you can allow it to find an available port.
 
@@ -100,7 +103,7 @@ Maven Artifact:
 <dependency>
     <groupId>com.confluex</groupId>
     <artifactId>confluex-mock-http</artifactId>
-    <version>0.1.0</version>
+    <version>0.3.0</version>
     <scope>test</scope>
 </dependency>
 ```
