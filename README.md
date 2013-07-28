@@ -21,10 +21,11 @@ no Groovy requirement (Groovy is great and you should really check it out though
 
 ## Example Usage
 
-The following demonstrates a JUnit test case which sets up mock responses to HTTP calls from clients and verifies
-the interaction with the server.  It uses the Jersey Client to make the HTTP requests; your code will
-
 _Hello World_
+
+The simplest usage of this library is to create a MockHttpServer, and set it up to respond the same regardless of
+what requests it receives.  Once you have instantiated the MockHttpServer, it is listening on localhost on the port
+you provided.
 
 ```groovy
 
@@ -34,11 +35,43 @@ import static com.confluex.mule.test.http.matchers.HttpMatchers.*
 MockHttpServer server = new MockHttpServer(8080)
 server.respondTo(anyRequest()).withBody('Hello World!')
 
+// ... clients can now connect to port 8080 and send HTTP requests.
+
+server.stop()
+
 ```
 
-In order to make sure the HTTP client sent the requests you expected, you can find out what requests the server received"
+_Handling different paths_
+
+You can instruct the MockHttpServer to respond to specific paths.  When a requests does not match anything, the
+server responds with a 404 status code.  When you use respondTo to match HTTP requests, the server responds with status
+code 200 and an empty response body unless you instruct it to do otherwise.
+
+```groovy
+
+MockHttpServer server = new MockHttpServer(8080)
+server.respondTo(path('/about-us')).withBody('We are awesome')
+server.respondTo(path('/blog/create-post.php')).withStatus(201).withBody('Created')
+
+```
+
+_Doing more with the response_
+
+You can control the response status, body, and headers
+
+```groovy
+
+server.respondTo(path('/not-found'))
+    .withStatus(404)
+    .withBody('Sorry, buddy')
+    .withHeader('Content-Type', 'text/plain')
+    .withHeader('Last-Modified', 'Tue, 15 Nov 1994 12:45:26 GMT')
+
+```
 
 _Asserting on request information_
+
+In order to make sure the HTTP client sent the requests you expected, you can find out what requests the server received.
 
 ```groovy
 
@@ -48,7 +81,16 @@ assertEquals('application/json', request.header['Content-Type']
 
 ```
 
+_Finding an available port_
 
+If you don't particularly care what port the HTTP server listens to, you can allow it to find an available port.
+
+```groovy
+
+MockHttpServer server = new MockHttpServer()
+int thePortItChose = server.port
+
+```
 
 # Maven Information
 
