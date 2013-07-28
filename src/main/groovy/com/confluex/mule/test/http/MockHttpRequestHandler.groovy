@@ -5,6 +5,7 @@ import com.confluex.mule.test.http.captor.RequestCaptor
 import com.confluex.mule.test.http.event.DefaultEventLatch
 import com.confluex.mule.test.http.event.EventLatch
 import com.confluex.mule.test.http.expectations.Expectation
+import com.confluex.mule.test.http.matchers.HttpRequestMatcher
 import groovy.transform.ToString
 import org.mortbay.jetty.handler.AbstractHandler
 import org.springframework.core.io.ClassPathResource
@@ -19,6 +20,8 @@ import static org.junit.Assert.*
 class MockHttpRequestHandler extends AbstractHandler implements EventLatch {
     RequestCaptor currentMapping;
     Map<String, RequestCaptor> mappings = [:]
+    List<HttpRequestMatcher> matchers = []
+    Map<HttpRequestMatcher, HttpResponder> responders = [:]
 
     @SuppressWarnings("GroovyUnusedDeclaration")
     @Delegate
@@ -55,11 +58,10 @@ class MockHttpRequestHandler extends AbstractHandler implements EventLatch {
     }
 
     void handle(String uri, HttpServletRequest request, HttpServletResponse response, int dispatch) {
-        def mapping = mappings[uri]
-        if (!mapping) {
-            throw new IllegalArgumentException("No captor mapped to uri: ${uri}")
+        HttpRequestMatcher matcher = matchers.find { matcher ->
+            matcher.matches(request)
         }
-        mapping.render(request, response)
+        responders[matcher]?.render(response)
         addEvent()
     }
 
@@ -73,6 +75,13 @@ class MockHttpRequestHandler extends AbstractHandler implements EventLatch {
             }
         }
         return this
+    }
+
+    HttpResponderBuilder respondTo(HttpRequestMatcher matcher) {
+        matchers << matcher
+        HttpResponderBuilder builder = new HttpResponderBuilder()
+        responders[matcher] = builder.responder
+        return builder
     }
 
     List<ClientRequest> getRequests(String uri) {
