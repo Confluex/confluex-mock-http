@@ -72,4 +72,26 @@ class MockHttpServerFunctionalTest {
         assert 'two' == responseTwo
     }
 
+    @Test
+    void shouldCaptureRequestInformation() {
+        Client.create().resource("http://localhost:${server.port}/cool-api/")
+                .header('Accept', 'application/json')
+                .entity('{"foo": "bar"}')
+                .post(ClientResponse.class)
+        Client.create().resource("http://localhost:${server.port}/wicked-api/search?query=foo")
+                .header('Accept', 'application/html')
+                .header('User-Agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:22.0) Gecko/20100101 Firefox/22.0')
+                .get(ClientResponse.class)
+
+        assert 2 == server.requests.size()
+        assert 1 == server.requests.findAll { it.method == 'GET' }.size()
+        assert server.requests.find { it.url =~ /wicked/ }.headers['User-Agent'] =~ 'Macintosh'
+        assert server.requests.find { it.headers['Accept'] == 'application/json'}.method == 'POST'
+
+// TODO: make java programmers' lives easier
+//        assert server.receivedRequest(path('/cool-api/'))
+//        assert server.receivedRequest(header('Accept', 'application/html'))
+//        assert server.receivedRequest(header('User-Agent', matching('Mozilla.*')))
+//        assert server.receivedRequest(path(matching('wicked.*')))
+    }
 }

@@ -22,6 +22,7 @@ class MockHttpRequestHandler extends AbstractHandler implements EventLatch {
     Map<String, RequestCaptor> mappings = [:]
     List<HttpRequestMatcher> matchers = []
     Map<HttpRequestMatcher, HttpResponder> responders = [:]
+    List<ClientRequest> requests = []
 
     @SuppressWarnings("GroovyUnusedDeclaration")
     @Delegate
@@ -62,6 +63,7 @@ class MockHttpRequestHandler extends AbstractHandler implements EventLatch {
             matcher.matches(request)
         }
         responders[matcher]?.render(response)
+        requests << new ClientRequest(request)
         addEvent()
     }
 

@@ -34,4 +34,8 @@ class MockHttpServer {
     HttpResponderBuilder respondTo(HttpRequestMatcher matcher) {
         handler.respondTo(matcher)
     }
+
+    List<ClientRequest> getRequests() {
+        handler.requests
+    }
 }
