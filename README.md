@@ -21,104 +21,30 @@ no Groovy requirement (Groovy is great and you should really check it out though
 
 ## Example Usage
 
-The following demonstrates a Junit test case which creates an embedded Jetty server and uses the MockHttpRequestHandler
-to setup mock responses to HTTP calls from clients and verification of the interaction with the server.
+The following demonstrates a JUnit test case which sets up mock responses to HTTP calls from clients and verifies
+the interaction with the server.  It uses the Jersey Client to make the HTTP requests; your code will
 
-_Junit Test Case_
+_Hello World_
 
 ```groovy
 
-package com.confluex.mule.test.http.jetty
+import com.confluex.mule.test.http.MockHttpServer
+import static com.confluex.mule.test.http.matchers.HttpMatchers.*
 
-import com.confluex.mule.test.http.MockHttpRequestHandler
-import com.confluex.mule.test.http.expectations.HeaderExpectation
-import com.confluex.mule.test.http.expectations.MediaTypeExpectation
-import com.confluex.mule.test.http.expectations.MethodExpectation
-import com.sun.jersey.api.client.Client
-import groovy.util.logging.Slf4j
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
-import org.mortbay.jetty.Server
+MockHttpServer server = new MockHttpServer(8080)
+server.respondTo(anyRequest()).withBody('Hello World!')
 
-import javax.ws.rs.core.MediaType
+```
 
-import static javax.servlet.http.HttpServletResponse.*
+In order to make sure the HTTP client sent the requests you expected, you can find out what requests the server received"
 
-@Slf4j
-class MockJettyHttpServerIntegrationTest {
+_Asserting on request information_
 
-    Server server
+```groovy
 
-    /**
-     * Create an embedded Jetty server for each test on port 9001
-     */
-    @Before
-    void createServer() {
-        server = new Server(9001)
-        server.start()
-    }
-
-    /**
-     * Stop the Jetty Server
-     */
-    @After
-    void stopServer() {
-        server.stop()
-    }
-
-    @Test
-    void shouldServeSimpleContent() {
-
-        // create the handler and setup the response data for the clients
-        def handler = new MockHttpRequestHandler()
-                .when("/foo")
-                .thenReturnResource("/http/responses/foo.xml")
-                .when("/bar")
-                .thenReturnResource("/http/responses/bar.json")
-                .withStatus(SC_OK)
-                .withHeader("x-bender", "Who are you, and why should I care?")
-                .withHeader("x-fry", "I did do the nasty in the pasty")
-
-        // assign the handler to the Jetty Server
-        server.handler = handler
-
-        // make some HTTP requests. This is using the Jersey rest client. You'll likely be testing your
-        // own internal code instead.
-        2.times {
-            def xml = Client.create().resource("http://localhost:9001/foo")
-                    .accept(MediaType.APPLICATION_XML)
-                    .type(MediaType.APPLICATION_XML)
-                    .get(String.class)
-            assert xml == this.class.getResourceAsStream("/http/responses/foo.xml").text
-        }
-        3.times {
-            def json = Client.create().resource("http://localhost:9001/bar")
-                    .type(MediaType.APPLICATION_JSON)
-                    .post(String.class, '{"count":1}')
-            assert json == this.class.getResourceAsStream("/http/responses/bar.json").text
-        }
-
-        // use the built in verifications
-        handler.verify("/foo", MethodExpectation.GET, MediaTypeExpectation.XML)
-        handler.verify("/bar",
-                MethodExpectation.POST,
-                MediaTypeExpectation.JSON,
-                new HeaderExpectation("Host", "localhost:9001")
-        )
-        handler.verify("/random", MethodExpectation.PUT, MediaTypeExpectation.TEXT)
-
-        // or grab the raw client request data and do your own assertions
-        def requests = handler.getRequests("/foo")
-        assert requests.size() == 2
-        requests.each {
-            assert it.contentType == "application/xml"
-            assert it.headers["Host"] == "localhost:9001"
-            assert it.headers["Accept"] == "application/xml"
-        }
-        assert handler.getRequests("/bar").size() == 3
-    }
-}
+ClientRequest request = server.requests.find() { it.method == 'GET' && it.path == '/widget/inventory' }
+assertNotNull(request)
+assertEquals('application/json', request.header['Content-Type']
 
 ```
 

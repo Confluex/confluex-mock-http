@@ -1,6 +1,5 @@
 package com.confluex.mule.test.http
 
-import com.confluex.mule.test.http.matchers.HttpMatchers
 import com.sun.jersey.api.client.Client
 import com.sun.jersey.api.client.ClientHandlerException
 import com.sun.jersey.api.client.ClientResponse
@@ -44,7 +43,7 @@ class MockHttpServerFunctionalTest {
         server.stop()
         try {
             Client.create().resource("http://localhost:${server.port}/").get(ClientResponse.class)
-            fail("Should have thrown ClientHandlerException with cause ConnectException")
+            fail("Unexpected listener on port ${server.port} after server.stop()")
         } catch (ClientHandlerException e) {
             if (! e.cause instanceof ConnectException) {
                 throw e
