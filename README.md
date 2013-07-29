@@ -89,6 +89,7 @@ You can also match on the request body, and combine matchers using "and"
 ```groovy
 
 server.respondTo(path('/profile').and(body('name=Ryan'))).withStatus('401')
+server.respondTo(path('/query').and(queryParam('q', 'cartoon+robot'))
 
 ```
 
