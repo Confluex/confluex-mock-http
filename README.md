@@ -19,6 +19,22 @@ the API until it reaches 1.0 status. Of course, we'll try to keep breaking chang
 Most of the examples documented here are using Groovy instead of Java. Feel free to use Java if you wish. There is
 no Groovy requirement (Groovy is great and you should really check it out though!).
 
+## Getting it on your classpath
+
+### Maven
+
+```xml
+<dependency>
+  <groupId>com.confluex</groupId>
+  <artifactId>confluex-mock-http</artifactId>
+  <version>0.3.0</version>
+</dependency>
+```
+
+### Gradle
+
+I have no idea :)
+
 ## Example Usage
 
 ### Hello World
@@ -41,6 +57,17 @@ server.stop()
 
 ```
 
+
+### Finding an available port
+
+If you don't particularly care what port the HTTP server listens to, you can allow it to find an available port.
+
+```groovy
+
+MockHttpServer server = new MockHttpServer()
+int thePortItChose = server.port
+
+```
 ### Handling different paths
 
 You can instruct the MockHttpServer to respond to specific paths.  When a requests does not match anything, the
@@ -49,9 +76,19 @@ code 200 and an empty response body unless you instruct it to do otherwise.
 
 ```groovy
 
-MockHttpServer server = new MockHttpServer(8080)
+MockHttpServer server = new MockHttpServer()
 server.respondTo(path('/about-us')).withBody('We are awesome')
 server.respondTo(path('/blog/create-post.php')).withStatus(201).withBody('Created')
+
+```
+
+### Matching other request details
+
+You can also match on the request body, and combine matchers using "and"
+
+```groovy
+
+server.respondTo(path('/profile').and(body('name=Ryan'))).withStatus('401')
 
 ```
 
@@ -84,14 +121,20 @@ assertEquals('application/json', request.header['Content-Type'])
 
 ```
 
-### Finding an available port
+### Waiting for requests to be received
 
-If you don't particularly care what port the HTTP server listens to, you can allow it to find an available port.
+
+You can also delay some processing until after a request has been received.
 
 ```groovy
 
-MockHttpServer server = new MockHttpServer()
-int thePortItChose = server.port
+system.startLongProcessThatCallsMyWebService()
+
+server.waitFor(anyRequest())
+
+system.startOtherProcessThatCallsSeveralWebServices()
+
+boolean completed = server.waitFor(path('/step/3'), 1000) // timeout in milliseconds
 
 ```
 
