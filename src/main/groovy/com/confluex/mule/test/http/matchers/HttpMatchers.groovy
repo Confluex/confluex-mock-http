@@ -20,4 +20,16 @@ class HttpMatchers {
             return body == request.body
         })
     }
+
+    static HttpRequestMatcher queryParam(String key) {
+        new HttpRequestMatcher({ ClientRequest request ->
+            return request.queryParams.containsKey(key)
+        })
+    }
+
+    static HttpRequestMatcher queryParam(String key, String value) {
+        new HttpRequestMatcher({ ClientRequest request ->
+            return request.queryParams[key] == value
+        })
+    }
 }

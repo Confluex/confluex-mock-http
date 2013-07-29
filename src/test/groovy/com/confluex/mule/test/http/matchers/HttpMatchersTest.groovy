@@ -34,4 +34,13 @@ class HttpMatchersTest {
         assert HttpMatchers.body('firstname=bender&lastname=rodriguez').matches(request)
         assert ! HttpMatchers.body('firstname=philip&lastname=fry').matches(request)
     }
+
+    @Test
+    void queryParamShouldMatchRequestQueryParameterInformation() {
+        when(request.getQueryParams()).thenReturn([firstName: 'Bender', lastName: 'Rodriguez'])
+        assert HttpMatchers.queryParam('firstName').matches(request)
+        assert ! HttpMatchers.queryParam('lastName', 'Fry').matches(request)
+        assert HttpMatchers.queryParam('lastName', 'Rodriguez').matches(request)
+        assert ! HttpMatchers.queryParam('imaginaryName', 'Homer').matches(request)
+    }
 }
