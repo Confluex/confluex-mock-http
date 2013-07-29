@@ -104,10 +104,13 @@ class MockHttpServerFunctionalTest {
 
         assert ! finished
         Client.create().resource("http://localhost:${server.port}/ready").get(ClientResponse.class)
+        Thread.sleep(100)
         assert ! finished
         Client.create().resource("http://localhost:${server.port}/steady").get(ClientResponse.class)
+        Thread.sleep(100)
         assert ! finished
         Client.create().resource("http://localhost:${server.port}/go").get(ClientResponse.class)
+        Thread.sleep(100)
         assert finished
     }
 
@@ -127,12 +130,12 @@ class MockHttpServerFunctionalTest {
 
         7.times {
             areWeThereYet().post(ClientResponse.class)
-            Thread.sleep(200)
+            Thread.sleep(100)
             assert ! enoughAlready
         }
 
         areWeThereYet().post(ClientResponse.class)
-        Thread.sleep(200)
+        Thread.sleep(100)
         assert enoughAlready
     }
 }
