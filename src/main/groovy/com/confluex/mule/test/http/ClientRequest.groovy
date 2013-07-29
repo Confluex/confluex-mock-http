@@ -12,6 +12,7 @@ class ClientRequest {
     String body
     String method
     String url
+    String path
     String queryString
 
     ClientRequest(HttpServletRequest request) {
@@ -19,6 +20,7 @@ class ClientRequest {
         this.contentType = request.contentType
         this.body = request.inputStream?.text
         this.url = request.requestURL.toString()
+        this.path = request.pathInfo
         this.queryString = request.queryString
         request.headerNames.each { String name ->
             headers[name] = request.getHeader(name)

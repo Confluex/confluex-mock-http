@@ -1,6 +1,6 @@
 package com.confluex.mule.test.http.matchers
 
-import javax.servlet.http.HttpServletRequest
+import com.confluex.mule.test.http.ClientRequest
 
 class HttpMatchers {
     static HttpRequestMatcher anyRequest() {
@@ -10,8 +10,14 @@ class HttpMatchers {
     }
 
     static HttpRequestMatcher path(String path) {
-        new HttpRequestMatcher({ HttpServletRequest request ->
-            return path == request.getPathInfo()
+        new HttpRequestMatcher({ ClientRequest request ->
+            return path == request.path
+        })
+    }
+
+    static HttpRequestMatcher body(String body) {
+        new HttpRequestMatcher({ ClientRequest request ->
+            return body == request.body
         })
     }
 }

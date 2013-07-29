@@ -93,4 +93,46 @@ class MockHttpServerFunctionalTest {
 //        assert server.receivedRequest(header('User-Agent', matching('Mozilla.*')))
 //        assert server.receivedRequest(path(matching('wicked.*')))
     }
+
+    @Test
+    void waitForShouldBlockUntilRequestCompleted() {
+        def finished = false
+        Thread.start {
+            server.waitFor(path('/go'), 1000)
+            finished = true
+        }
+
+        assert ! finished
+        Client.create().resource("http://localhost:${server.port}/ready").get(ClientResponse.class)
+        assert ! finished
+        Client.create().resource("http://localhost:${server.port}/steady").get(ClientResponse.class)
+        assert ! finished
+        Client.create().resource("http://localhost:${server.port}/go").get(ClientResponse.class)
+        assert finished
+    }
+
+    @Test
+    void waitForShouldSupportMultipleRequestsAndConsiderPriorRequests() {
+        def areWeThereYet = { Client.create().resource("http://localhost:${server.port}/mom").entity('Are we there yet?') }
+
+        2.times {
+            areWeThereYet().post(ClientResponse.class)
+        }
+
+        def enoughAlready = false
+
+        Thread.start {
+            enoughAlready = server.waitFor(path('/mom').and(body('Are we there yet?')), 10, 2000)
+        }
+
+        7.times {
+            areWeThereYet().post(ClientResponse.class)
+            Thread.sleep(200)
+            assert ! enoughAlready
+        }
+
+        areWeThereYet().post(ClientResponse.class)
+        Thread.sleep(200)
+        assert enoughAlready
+    }
 }

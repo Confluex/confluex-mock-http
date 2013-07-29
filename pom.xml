@@ -216,6 +216,12 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
+                <groupId>com.cyrusinnovation</groupId>
+                <artifactId>mockito-groovy-support</artifactId>
+                <version>1.2</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-test</artifactId>
                 <version>${spring.version}</version>
@@ -282,6 +288,10 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.cyrusinnovation</groupId>
+            <artifactId>mockito-groovy-support</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>

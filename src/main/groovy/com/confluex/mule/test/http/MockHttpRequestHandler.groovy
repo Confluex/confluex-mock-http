@@ -4,6 +4,7 @@ import com.confluex.mule.test.http.captor.DefaultRequestCaptor
 import com.confluex.mule.test.http.captor.RequestCaptor
 import com.confluex.mule.test.http.event.DefaultEventLatch
 import com.confluex.mule.test.http.event.EventLatch
+import com.confluex.mule.test.http.event.MatchingEventLatch
 import com.confluex.mule.test.http.expectations.Expectation
 import com.confluex.mule.test.http.matchers.HttpRequestMatcher
 import groovy.transform.ToString
@@ -17,16 +18,13 @@ import javax.servlet.http.HttpServletResponse
 import static org.junit.Assert.*
 
 @ToString(includeNames = true, includes = "mappings, currentMapping")
-class MockHttpRequestHandler extends AbstractHandler implements EventLatch {
+class MockHttpRequestHandler extends AbstractHandler {
     RequestCaptor currentMapping;
     Map<String, RequestCaptor> mappings = [:]
     List<HttpRequestMatcher> matchers = []
     Map<HttpRequestMatcher, HttpResponder> responders = [:]
     List<ClientRequest> requests = []
-
-    @SuppressWarnings("GroovyUnusedDeclaration")
-    @Delegate
-    EventLatch eventLatch = new DefaultEventLatch()
+    List<MatchingEventLatch> latches = []
 
     MockHttpRequestHandler when(String uri) {
         currentMapping = new DefaultRequestCaptor()
@@ -59,12 +57,17 @@ class MockHttpRequestHandler extends AbstractHandler implements EventLatch {
     }
 
     void handle(String uri, HttpServletRequest request, HttpServletResponse response, int dispatch) {
+        def clientRequest = new ClientRequest(request)
+        requests << clientRequest
         HttpRequestMatcher matcher = matchers.find { matcher ->
-            matcher.matches(request)
+            matcher.matches(clientRequest)
         }
         responders[matcher]?.render(response)
-        requests << new ClientRequest(request)
-        addEvent()
+        synchronized(latches) {
+            latches.each {
+                it.addEvent(clientRequest)
+            }
+        }
     }
 
     MockHttpRequestHandler verify(String uri, Expectation... expectations) {
@@ -84,6 +87,16 @@ class MockHttpRequestHandler extends AbstractHandler implements EventLatch {
         HttpResponderBuilder builder = new HttpResponderBuilder()
         responders[matcher] = builder.responder
         return builder
+    }
+
+    boolean waitFor(HttpRequestMatcher matcher, int expected, long timeoutMs) {
+        def latch
+        synchronized(latches) {
+            latch = new MatchingEventLatch(matcher, expected)
+            requests.each { latch.addEvent(it) }
+            latches << latch
+        }
+        latch.await(timeoutMs)
     }
 
     List<ClientRequest> getRequests(String uri) {
