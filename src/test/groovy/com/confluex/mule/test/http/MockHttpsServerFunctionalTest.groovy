@@ -7,13 +7,8 @@ import com.sun.jersey.api.client.config.DefaultClientConfig
 import com.sun.jersey.client.urlconnection.HTTPSProperties
 import org.junit.Before
 import org.junit.Test
-import org.springframework.core.io.ClassPathResource
 
 import static com.confluex.mule.test.http.matchers.HttpMatchers.*
-
-import javax.net.ssl.SSLContext
-import javax.net.ssl.TrustManagerFactory
-import java.security.KeyStore
 
 class MockHttpsServerFunctionalTest {
 
@@ -22,15 +17,7 @@ class MockHttpsServerFunctionalTest {
     @Before
     void initSslClient() {
         ClientConfig config = new DefaultClientConfig()
-        SSLContext sslContext = SSLContext.getInstance('SSL')
-
-        KeyStore truststore = KeyStore.getInstance('JKS')
-        truststore.load(new ClassPathResource('confluex-mock.keystore').inputStream, 'confluex'.toCharArray())
-        TrustManagerFactory tmf = TrustManagerFactory.getInstance('SunX509')
-        tmf.init(truststore)
-
-        sslContext.init(null, tmf.getTrustManagers(), null)
-        config.properties.put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, new HTTPSProperties(null, sslContext))
+        config.properties.put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, new HTTPSProperties(null, MockHttpsServer.clientSslContext))
         sslClient = Client.create(config)
     }
 

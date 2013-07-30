@@ -2,6 +2,11 @@ package com.confluex.mule.test.http
 
 import com.confluex.mule.test.http.jetty.MockSslSocketConnector
 import org.mortbay.jetty.Server
+import org.springframework.core.io.ClassPathResource
+
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManagerFactory
+import java.security.KeyStore
 
 class MockHttpsServer extends MockHttpServer {
     MockHttpsServer() {
@@ -25,5 +30,17 @@ class MockHttpsServer extends MockHttpServer {
                 setPort(port)
             }});
         }}
+    }
+
+    static SSLContext getClientSslContext() {
+        SSLContext sslContext = SSLContext.getInstance('SSL')
+
+        KeyStore truststore = KeyStore.getInstance('JKS')
+        truststore.load(new ClassPathResource('confluex-mock.keystore').inputStream, 'confluex'.toCharArray())
+        TrustManagerFactory tmf = TrustManagerFactory.getInstance('SunX509')
+        tmf.init(truststore)
+
+        sslContext.init(null, tmf.getTrustManagers(), null)
+        return sslContext
     }
 }
