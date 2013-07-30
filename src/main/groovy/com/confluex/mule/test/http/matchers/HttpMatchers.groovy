@@ -32,4 +32,16 @@ class HttpMatchers {
             return request.queryParams[key] == value
         })
     }
+
+    static HttpRequestMatcher header(String key) {
+        new HttpRequestMatcher({ ClientRequest request ->
+            return request.headers.containsKey(key)
+        })
+    }
+
+    static HttpRequestMatcher header(String key, String value) {
+        new HttpRequestMatcher({ ClientRequest request ->
+            return request.headers[key] == value
+        })
+    }
 }

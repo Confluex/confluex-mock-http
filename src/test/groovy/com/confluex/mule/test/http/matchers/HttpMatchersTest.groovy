@@ -43,4 +43,13 @@ class HttpMatchersTest {
         assert HttpMatchers.queryParam('lastName', 'Rodriguez').matches(request)
         assert ! HttpMatchers.queryParam('imaginaryName', 'Homer').matches(request)
     }
+
+    @Test
+    void headerShouldMatchRequestHeader() {
+        when(request.getHeaders()).thenReturn(['Content-Type': 'application/xml', 'Accept': 'text/html'])
+        assert HttpMatchers.header('Accept').matches(request)
+        assert ! HttpMatchers.header('Connection').matches(request)
+        assert HttpMatchers.header('Content-Type', 'application/xml').matches(request)
+        assert ! HttpMatchers.header('Content-Type', 'text/html').matches(request)
+    }
 }
