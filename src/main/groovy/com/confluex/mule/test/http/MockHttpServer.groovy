@@ -16,9 +16,13 @@ class MockHttpServer {
     MockHttpServer(int port) {
         this.port = port
         if (0 == port) findAvailablePort()
-        jettyServer = new Server(this.port)
+        jettyServer = initJettyServer(this.port)
         jettyServer.handler = handler = new MockHttpRequestHandler()
         jettyServer.start()
+    }
+
+    protected Server initJettyServer(int port) {
+        new Server(port)
     }
 
     private void findAvailablePort() {

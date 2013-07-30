@@ -57,17 +57,6 @@ server.stop()
 
 ```
 
-
-### Finding an available port
-
-If you don't particularly care what port the HTTP server listens to, you can allow it to find an available port.
-
-```groovy
-
-MockHttpServer server = new MockHttpServer()
-int thePortItChose = server.port
-
-```
 ### Handling different paths
 
 You can instruct the MockHttpServer to respond to specific paths.  When a requests does not match anything, the
@@ -136,6 +125,28 @@ server.waitFor(anyRequest())
 system.startOtherProcessThatCallsSeveralWebServices()
 
 boolean completed = server.waitFor(path('/step/3'), 1000) // timeout in milliseconds
+
+```
+
+### Finding an available port
+
+If you don't particularly care what port the HTTP server listens to, you can allow it to find an available port.
+
+```groovy
+
+MockHttpServer server = new MockHttpServer()
+int thePortItChose = server.port
+
+```
+### Supporting SSL
+
+To mock an HTTPS server, use MockHttpsServer in the place of MockHttpServer.  Your HTTPS client will need to use
+a keystore that contains the mock server's certificate.  confluex-mock.keystore is available on the classpath,
+and its password is confluex.
+
+```groovy
+
+MockHttpsServer server = new MockHttpsServer(443)
 
 ```
 
