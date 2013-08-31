@@ -72,6 +72,16 @@ class MockHttpServerFunctionalTest {
     }
 
     @Test
+    void shouldAcceptClosureForBody() {
+        server.respondTo(path('/')).withBody { ClientRequest request ->
+            request.queryParams['chipmunk']
+        }
+
+        assert 'simon' == Client.create().resource("http://localhost:${server.port}/").queryParam('chipmunk', 'simon').get(String)
+        assert 'theodore' == Client.create().resource("http://localhost:${server.port}/").queryParam('chipmunk', 'theodore').get(String)
+    }
+
+    @Test
     void shouldCaptureRequestInformation() {
         Client.create().resource("http://localhost:${server.port}/cool-api/")
                 .header('Accept', 'application/json')

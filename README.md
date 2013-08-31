@@ -96,6 +96,19 @@ server.respondTo(path('/not-found'))
 
 ```
 
+### Dynamic responses
+
+Your response can use information from the request to generate the response body
+
+``` groovy
+
+server.respondTo(path('query.cgi'))
+    .withBody() { ClientRequest request ->
+        return doSomethingComplicatedWith(request.getBody())
+    }
+
+```
+
 ### Asserting on request information
 
 In order to make sure the HTTP client sent the requests you expected, you can find out what requests the server received.

@@ -21,7 +21,7 @@ class MockHttpRequestHandler extends AbstractHandler {
         HttpRequestMatcher matcher = matchers.find { matcher ->
             matcher.matches(clientRequest)
         }
-        responders[matcher]?.render(response)
+        responders[matcher]?.render(clientRequest, response)
         synchronized(latches) {
             latches.each {
                 it.addEvent(clientRequest)

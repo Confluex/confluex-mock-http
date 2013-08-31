@@ -11,11 +11,13 @@ import static javax.servlet.http.HttpServletResponse.*
 class HttpResponder {
     int status = SC_OK
     Resource body = new ByteArrayResource("".bytes)
+    Closure bodyClosure
+
     Map<String, String> headers = [:]
 
-    void render(HttpServletResponse response) {
+    void render(ClientRequest request, HttpServletResponse response) {
         response.status = status
-        response.outputStream << body.inputStream
+        response.outputStream << (bodyClosure?.call(request) ?: body.inputStream)
         headers.each { k, v ->
             response.addHeader(k, v)
         }
@@ -27,6 +29,11 @@ class HttpResponderBuilder {
 
     HttpResponderBuilder withBody(String text) {
         responder.body = new ByteArrayResource(text.bytes)
+        this
+    }
+
+    HttpResponderBuilder withBody(Closure closure) {
+        responder.bodyClosure = closure
         this
     }
 
