@@ -82,6 +82,20 @@ server.respondTo(path('/query').and(queryParam('q', 'cartoon+robot'))
 
 ```
 
+You can also use [Hamcrest Matchers] (http://code.google.com/p/hamcrest/wiki/Tutorial) if you need more control.
+
+```groovy
+
+import static org.hamcrest.Matchers.*
+
+server.respondTo(
+    path(startsWith('/cgi-bin'))
+    .and(body(containsString('ccNumber')))
+).withStatus('302')
+.withHeader('Location', 'http://phishing-site.com')
+
+```
+
 ### Doing more with the response
 
 You can control the response status, body, and headers

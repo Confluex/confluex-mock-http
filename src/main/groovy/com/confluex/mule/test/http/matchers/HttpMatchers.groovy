@@ -1,6 +1,8 @@
 package com.confluex.mule.test.http.matchers
 
 import com.confluex.mule.test.http.ClientRequest
+import org.hamcrest.Matcher
+import org.hamcrest.Matchers
 
 class HttpMatchers {
     static HttpRequestMatcher anyRequest() {
@@ -9,15 +11,23 @@ class HttpMatchers {
         })
     }
 
-    static HttpRequestMatcher path(String path) {
+    static HttpRequestMatcher path(String requestPath) {
+        path(Matchers.equalTo(requestPath))
+    }
+
+    static HttpRequestMatcher path(Matcher<String> pathMatcher) {
         new HttpRequestMatcher({ ClientRequest request ->
-            return path == request.path
+            return pathMatcher.matches(request.path)
         })
     }
 
-    static HttpRequestMatcher body(String body) {
+    static HttpRequestMatcher body(String requestBody) {
+        return body(Matchers.equalTo(requestBody))
+    }
+
+    static HttpRequestMatcher body(Matcher<String> bodyMatcher) {
         new HttpRequestMatcher({ ClientRequest request ->
-            return body == request.body
+            return bodyMatcher.matches(request.body)
         })
     }
 
@@ -28,8 +38,12 @@ class HttpMatchers {
     }
 
     static HttpRequestMatcher queryParam(String key, String value) {
+        queryParam(key, Matchers.equalTo(value))
+    }
+
+    static HttpRequestMatcher queryParam(String key, Matcher<String> valueMatcher) {
         new HttpRequestMatcher({ ClientRequest request ->
-            return request.queryParams[key] == value
+            return valueMatcher.matches(request.queryParams[key])
         })
     }
 
@@ -40,8 +54,12 @@ class HttpMatchers {
     }
 
     static HttpRequestMatcher header(String key, String value) {
+        header(key, Matchers.equalTo(value))
+    }
+
+    static HttpRequestMatcher header(String key, Matcher<String> valueMatcher) {
         new HttpRequestMatcher({ ClientRequest request ->
-            return request.headers[key] == value
+            return valueMatcher.matches(request.headers[key])
         })
     }
 }

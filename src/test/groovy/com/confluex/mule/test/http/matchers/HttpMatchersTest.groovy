@@ -1,14 +1,14 @@
 package com.confluex.mule.test.http.matchers
 
 import com.confluex.mule.test.http.ClientRequest
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.runners.MockitoJUnitRunner
-import org.springframework.mock.web.MockHttpServletRequest
 
-import static org.mockito.Mockito.*
+import static org.mockito.Mockito.when;
+import static org.hamcrest.Matchers.*;
+
 
 @RunWith(MockitoJUnitRunner)
 class HttpMatchersTest {
@@ -29,10 +29,24 @@ class HttpMatchersTest {
     }
 
     @Test
+    void pathShouldUseHamcrestMatcher() {
+        when(request.getPath()).thenReturn('/wp-admin/post.php')
+        assert HttpMatchers.path(endsWith('.php')).matches(request)
+        assert ! HttpMatchers.path(containsString('edit')).matches(request)
+    }
+
+    @Test
     void bodyShouldMatchRequestBody() {
         when(request.getBody()).thenReturn('firstname=bender&lastname=rodriguez')
         assert HttpMatchers.body('firstname=bender&lastname=rodriguez').matches(request)
         assert ! HttpMatchers.body('firstname=philip&lastname=fry').matches(request)
+    }
+
+    @Test
+    void bodyShouldUseHamcrestMatcher() {
+        when(request.getBody()).thenReturn('firstname=bender&lastname=rodriguez')
+        assert HttpMatchers.body(containsString('bender')).matches(request)
+        assert ! HttpMatchers.body(not(containsString('bender'))).matches(request)
     }
 
     @Test
@@ -45,11 +59,25 @@ class HttpMatchersTest {
     }
 
     @Test
+    void queryParamShouldUseHamcrestMatcher() {
+        when(request.getQueryParams()).thenReturn([firstName: 'Bender', lastName: 'Rodriguez'])
+        assert HttpMatchers.queryParam('firstName', startsWith('B')).matches(request)
+        assert ! HttpMatchers.queryParam('lastName', startsWith('B')).matches(request)
+    }
+
+    @Test
     void headerShouldMatchRequestHeader() {
         when(request.getHeaders()).thenReturn(['Content-Type': 'application/xml', 'Accept': 'text/html'])
         assert HttpMatchers.header('Accept').matches(request)
         assert ! HttpMatchers.header('Connection').matches(request)
         assert HttpMatchers.header('Content-Type', 'application/xml').matches(request)
         assert ! HttpMatchers.header('Content-Type', 'text/html').matches(request)
+    }
+
+    @Test
+    void headerShouldUseHamcrestMatcher() {
+        when(request.getHeaders()).thenReturn(['Content-Type': 'application/xml', 'Accept': 'text/html'])
+        assert HttpMatchers.header('Content-Type', startsWith('application')).matches(request)
+        assert ! HttpMatchers.header('Content-Type', startsWith('text')).matches(request)
     }
 }
