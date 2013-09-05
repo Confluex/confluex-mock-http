@@ -73,6 +73,19 @@ class MockHttpServerFunctionalTest {
     }
 
     @Test
+    void matchersShouldSupercedePriorMatchers() {
+        server.respondTo(get(startsWith('/washington'))).withBody('State')
+        server.respondTo(get(startsWith('/washington/seattle'))).withBody('City')
+        server.respondTo(get(startsWith('/washington/seattle/confluex'))).withBody('Company')
+
+        def resource =  Client.create().resource("http://localhost:${server.port}/washington")
+
+        assert 'Company' == resource.path('/seattle/confluex').get(String.class)
+        assert 'City' == resource.path('/seattle').get(String.class)
+        assert 'State' == resource.get(String.class)
+    }
+
+    @Test
     void differentMethodsShouldRespondDifferently() {
         server.respondTo(get('/restfulResource')).withBody('GET')
         server.respondTo(put(startsWith('/restfulResource/'))).withBody('PUT')

@@ -30,7 +30,7 @@ class MockHttpRequestHandler extends AbstractHandler {
     }
 
     HttpResponderBuilder respondTo(HttpRequestMatcher matcher) {
-        matchers << matcher
+        matchers.add 0, matcher
         HttpResponderBuilder builder = new HttpResponderBuilder()
         responders[matcher] = builder.responder
         return builder

@@ -96,6 +96,20 @@ server.respondTo(
 
 ```
 
+### Matcher Priority
+
+Each time you call server.respondTo, your matcher takes priority over previous matchers.  This means you should configure
+more general matchers first, and follow on with more specific ones
+
+```groovy
+
+server.respondTo(get()).withStatus(404).withBody("huh?")
+server.respondTo(get().and(header("Accept", "text/xml")).withStatus(404).withBody("<huh />")
+server.respondTo(get("/images")).withHeader("Content-Type", "text/html").withResource("/images/index.html")
+server.respondTo(get("/images/logo.png")).withHeader("Content-Type", "image/png").withResource("/images/logo.png")
+
+```
+
 ### Doing more with the response
 
 You can control the response status, body, and headers
