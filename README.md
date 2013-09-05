@@ -57,7 +57,7 @@ server.stop()
 
 ```
 
-### Handling different paths
+### Handling different methods and paths
 
 You can instruct the MockHttpServer to respond to specific paths.  When a requests does not match anything, the
 server responds with a 404 status code.  When you use respondTo to match HTTP requests, the server responds with status
@@ -66,8 +66,8 @@ code 200 and an empty response body unless you instruct it to do otherwise.
 ```groovy
 
 MockHttpServer server = new MockHttpServer()
-server.respondTo(path('/about-us')).withBody('We are awesome')
-server.respondTo(path('/blog/create-post.php')).withStatus(201).withBody('Created')
+server.respondTo(get('/about-us')).withBody('We are awesome')
+server.respondTo(post('/blog/create-post.php')).withStatus(201).withBody('Created')
 
 ```
 
