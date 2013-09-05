@@ -9,6 +9,7 @@ import org.junit.Test
 
 import static javax.servlet.http.HttpServletResponse.*
 import static com.confluex.mule.test.http.matchers.HttpMatchers.*
+import static org.hamcrest.Matchers.*
 
 import static org.junit.Assert.*
 
@@ -72,6 +73,23 @@ class MockHttpServerFunctionalTest {
     }
 
     @Test
+    void differentMethodsShouldRespondDifferently() {
+        server.respondTo(get('/restfulResource')).withBody('GET')
+        server.respondTo(put(startsWith('/restfulResource/'))).withBody('PUT')
+        server.respondTo(post('/restfulResource')).withBody('POST')
+        server.respondTo(delete(startsWith('/restfulResource/'))).withBody('DELETE')
+        server.respondTo(method('OPTIONS').and(path('/restfulResource'))).withBody('OPTIONS')
+
+        def resource = Client.create().resource("http://localhost:${server.port}/restfulResource")
+
+        assert 'GET' == resource.get(String.class)
+        assert 'PUT' == resource.path('/1').put(String.class)
+        assert 'POST' == resource.post(String.class)
+        assert 'DELETE' == resource.path('/1').delete(String.class)
+        assert 'OPTIONS' == resource.method('OPTIONS', String.class)
+    }
+
+    @Test
     void shouldAcceptClosureForBody() {
         server.respondTo(path('/')).withBody { ClientRequest request ->
             request.queryParams['chipmunk']
@@ -97,7 +115,7 @@ class MockHttpServerFunctionalTest {
         assert server.requests.find { it.url =~ /wicked/ }.headers['User-Agent'] =~ 'Macintosh'
         assert server.requests.find { it.headers['Accept'] == 'application/json'}.method == 'POST'
 
-// TODO: make java programmers' lives easier
+// TODO: make java programmers' lives easier - use the same HttpMatchers we use to set up the server and to waitFor things
 //        assert server.receivedRequest(path('/cool-api/'))
 //        assert server.receivedRequest(header('Accept', 'application/html'))
 //        assert server.receivedRequest(header('User-Agent', matching('Mozilla.*')))

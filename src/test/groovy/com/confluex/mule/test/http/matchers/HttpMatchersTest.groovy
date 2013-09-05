@@ -80,4 +80,68 @@ class HttpMatchersTest {
         assert HttpMatchers.header('Content-Type', startsWith('application')).matches(request)
         assert ! HttpMatchers.header('Content-Type', startsWith('text')).matches(request)
     }
+
+    @Test
+    void methodShouldMatchRequestMethod() {
+        when(request.getMethod()).thenReturn('ASSASSINATE')
+
+        assert ! HttpMatchers.method('GET').matches(request)
+        assert ! HttpMatchers.method('PUT').matches(request)
+        assert ! HttpMatchers.method('POST').matches(request)
+        assert ! HttpMatchers.method('DELETE').matches(request)
+        assert HttpMatchers.method('ASSASSINATE').matches(request)
+        assert HttpMatchers.method(containsString('ASSASSIN')).matches(request)
+    }
+
+    @Test
+    void getShouldMatchGetMethodAndPath() {
+        when(request.getMethod()).thenReturn('GET')
+        when(request.getPath()).thenReturn('/wp-admin/post.php')
+
+        assert HttpMatchers.get('/wp-admin/post.php').matches(request)
+        assert ! HttpMatchers.get('/wp-admin/edit.php').matches(request)
+
+        when(request.getMethod()).thenReturn('POST')
+
+        assert ! HttpMatchers.get('/wp-admin/post.php').matches(request)
+    }
+
+    @Test
+    void putShouldMatchPutMethodAndPath() {
+        when(request.getMethod()).thenReturn('PUT')
+        when(request.getPath()).thenReturn('/wp-admin/post.php')
+
+        assert HttpMatchers.put('/wp-admin/post.php').matches(request)
+        assert ! HttpMatchers.put('/wp-admin/edit.php').matches(request)
+
+        when(request.getMethod()).thenReturn('POST')
+
+        assert ! HttpMatchers.put('/wp-admin/post.php').matches(request)
+    }
+
+    @Test
+    void postShouldMatchPostMethodAndPath() {
+        when(request.getMethod()).thenReturn('POST')
+        when(request.getPath()).thenReturn('/wp-admin/post.php')
+
+        assert HttpMatchers.post('/wp-admin/post.php').matches(request)
+        assert ! HttpMatchers.post('/wp-admin/edit.php').matches(request)
+
+        when(request.getMethod()).thenReturn('GET')
+
+        assert ! HttpMatchers.post('/wp-admin/post.php').matches(request)
+    }
+
+    @Test
+    void deleteShouldMatchDeleteMethodAndPath() {
+        when(request.getMethod()).thenReturn('DELETE')
+        when(request.getPath()).thenReturn('/wp-admin/post.php')
+
+        assert HttpMatchers.delete('/wp-admin/post.php').matches(request)
+        assert ! HttpMatchers.delete('/wp-admin/edit.php').matches(request)
+
+        when(request.getMethod()).thenReturn('POST')
+
+        assert ! HttpMatchers.delete('/wp-admin/post.php').matches(request)
+    }
 }

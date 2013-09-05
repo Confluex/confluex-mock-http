@@ -1,6 +1,8 @@
 package com.confluex.mule.test.http.matchers
 
 import com.confluex.mule.test.http.ClientRequest
+import org.hamcrest.BaseMatcher
+import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers
 
@@ -19,6 +21,64 @@ class HttpMatchers {
         new HttpRequestMatcher({ ClientRequest request ->
             return pathMatcher.matches(request.path)
         })
+    }
+
+    static HttpRequestMatcher method(Matcher<String> methodMatcher) {
+        new HttpRequestMatcher({ ClientRequest request ->
+            return methodMatcher.matches(request.method)
+        })
+    }
+
+    static HttpRequestMatcher method(String requestMethod) {
+        method(Matchers.equalTo(requestMethod))
+    }
+
+    static HttpRequestMatcher get() {
+        method('GET')
+    }
+
+    static HttpRequestMatcher get(String requestPath) {
+        get().and(path(requestPath))
+    }
+
+    static HttpRequestMatcher get(Matcher<String> pathMatcher) {
+        get().and(path(pathMatcher))
+    }
+
+    static HttpRequestMatcher put() {
+        method('PUT')
+    }
+
+    static HttpRequestMatcher put(String requestPath) {
+        put().and(path(requestPath))
+    }
+
+    static HttpRequestMatcher put(Matcher<String> pathMatcher) {
+        put().and(path(pathMatcher))
+    }
+
+    static HttpRequestMatcher post() {
+        method('POST')
+    }
+
+    static HttpRequestMatcher post(String requestPath) {
+        post().and(path(requestPath))
+    }
+
+    static HttpRequestMatcher post(Matcher<String> pathMatcher) {
+        post().and(path(pathMatcher))
+    }
+
+    static HttpRequestMatcher delete() {
+        method('DELETE')
+    }
+
+    static HttpRequestMatcher delete(String requestPath) {
+        delete().and(path(requestPath))
+    }
+
+    static HttpRequestMatcher delete(Matcher<String> pathMatcher) {
+        delete().and(path(pathMatcher))
     }
 
     static HttpRequestMatcher body(String requestBody) {
@@ -61,5 +121,20 @@ class HttpMatchers {
         new HttpRequestMatcher({ ClientRequest request ->
             return valueMatcher.matches(request.headers[key])
         })
+    }
+
+    static Matcher<String> matchesPattern(final String regex) {
+        new BaseMatcher<String>() {
+            @Override
+            boolean matches(Object o) {
+                return o ==~ regex
+            }
+
+            @Override
+            void describeTo(Description description) {
+                description.appendText("a string matching the regular expression ")
+                    .appendValue(regex)
+            }
+        }
     }
 }
