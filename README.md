@@ -45,8 +45,8 @@ you provided.
 
 ```groovy
 
-import com.confluex.mule.test.http.MockHttpServer
-import static com.confluex.mule.test.http.matchers.HttpMatchers.*
+import com.confluex.mock.http.MockHttpServer
+import static com.confluex.mock.http.matchers.HttpMatchers.*
 
 MockHttpServer server = new MockHttpServer(8080)
 server.respondTo(anyRequest()).withBody('Hello World!')
