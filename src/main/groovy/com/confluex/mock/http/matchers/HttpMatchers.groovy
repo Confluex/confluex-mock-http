@@ -142,11 +142,11 @@ class HttpMatchers {
         }
     }
 
-    static Matcher<String> hasXPath(final String xpath) {
-        hasXPath(xpath, Matchers.any(String))
+    static Matcher<String> stringHasXPath(final String xpath) {
+        stringHasXPath(xpath, Matchers.any(String))
     }
 
-    static Matcher<String> hasXPath(final String xpath, final Matcher<String> valueMatcher) {
+    static Matcher<String> stringHasXPath(final String xpath, final Matcher<String> valueMatcher) {
         final def evaluator = XPathFactory.newInstance().newXPath()
         new BaseMatcher<String>() {
 
