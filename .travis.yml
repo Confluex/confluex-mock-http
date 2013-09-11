@@ -1,3 +1,3 @@
 language: groovy
 install: "mvn -s ./.travis.maven-settings.xml -P confluex clean compile"
-script: "mvn -s ./.travis.maven-settings.xml -P confluex -U test"
+script: "mvn -s ./.travis.maven-settings.xml -P confluex -U clean test"
