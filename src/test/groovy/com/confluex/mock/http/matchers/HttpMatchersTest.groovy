@@ -144,4 +144,13 @@ class HttpMatchersTest {
 
         assert ! HttpMatchers.delete('/wp-admin/post.php').matches(request)
     }
+
+    @Test
+    void stringHasXpath() {
+        String xml = '<feed><title>Interesting Posts</title><entry><title>Where Dark Energy Comes From</title></entry></feed>'
+        assert HttpMatchers.hasXPath('/feed/entry/title').matches(xml)
+        assert ! HttpMatchers.hasXPath('/feed/subtitle').matches(xml)
+        assert HttpMatchers.hasXPath('/feed/entry/title', containsString('Dark Energy')).matches(xml)
+        assert ! HttpMatchers.hasXPath('/feed/entry').matches('{ "docType": "json" }')
+    }
 }

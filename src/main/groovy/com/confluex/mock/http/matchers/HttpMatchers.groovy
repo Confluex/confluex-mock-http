@@ -5,6 +5,10 @@ import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers
+import org.xml.sax.SAXException
+
+import javax.xml.parsers.DocumentBuilderFactory
+import javax.xml.xpath.XPathFactory
 
 class HttpMatchers {
     static HttpRequestMatcher anyRequest() {
@@ -134,6 +138,33 @@ class HttpMatchers {
             void describeTo(Description description) {
                 description.appendText("a string matching the regular expression ")
                     .appendValue(regex)
+            }
+        }
+    }
+
+    static Matcher<String> hasXPath(final String xpath) {
+        hasXPath(xpath, Matchers.any(String))
+    }
+
+    static Matcher<String> hasXPath(final String xpath, final Matcher<String> valueMatcher) {
+        final def evaluator = XPathFactory.newInstance().newXPath()
+        new BaseMatcher<String>() {
+
+            @Override
+            boolean matches(Object o) {
+                def builder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                try {
+                    def doc = builder.parse(new ByteArrayInputStream(o.bytes)).documentElement
+                    return evaluator.evaluate(xpath, doc)
+                }
+                catch (SAXException e) {
+                    return false
+                }
+            }
+
+            @Override
+            void describeTo(Description description) {
+                Matchers.hasXPath(xpath, valueMatcher).describeTo(description)
             }
         }
     }
