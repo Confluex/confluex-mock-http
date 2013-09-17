@@ -20,11 +20,11 @@ class HttpResponder {
     void render(ClientRequest request, HttpServletResponse response) {
         response.status = status
         def body = (bodyClosure?.call(request) ?: body.inputStream.text) // this is a memory hog
-        log.debug "Responding $status with body: $body"
-        response.outputStream << body
+        log.debug "Responding $status with headers $headers and body: $body"
         headers.each { k, v ->
             response.addHeader(k, v)
         }
+        response.outputStream << body
     }
 }
 

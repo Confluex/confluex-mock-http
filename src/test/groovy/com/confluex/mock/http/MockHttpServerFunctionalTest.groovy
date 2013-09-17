@@ -7,6 +7,8 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
+import javax.ws.rs.core.MediaType
+
 import static javax.servlet.http.HttpServletResponse.*
 import static com.confluex.mock.http.matchers.HttpMatchers.*
 import static org.hamcrest.Matchers.*
@@ -50,6 +52,14 @@ class MockHttpServerFunctionalTest {
                 throw e
             }
         }
+    }
+
+    @Test
+    void shouldRespond404WhenCreated() {
+        ClientResponse response = Client.create().resource("http://localhost:${server.port}/").get(ClientResponse.class)
+        assert 404 == response.status
+        assert "Resource not found" == response.getEntity(String)
+        assert MediaType.TEXT_PLAIN_TYPE == response.getType()
     }
 
     @Test

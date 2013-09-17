@@ -1,6 +1,7 @@
 package com.confluex.mock.http
 
 import com.confluex.mock.http.event.MatchingEventLatch
+import com.confluex.mock.http.matchers.HttpMatchers
 import com.confluex.mock.http.matchers.HttpRequestMatcher
 import groovy.transform.ToString
 import groovy.util.logging.Slf4j
@@ -16,6 +17,10 @@ class MockHttpRequestHandler extends AbstractHandler {
     Map<HttpRequestMatcher, HttpResponder> responders = [:]
     List<ClientRequest> requests = []
     List<MatchingEventLatch> latches = []
+
+    public MockHttpRequestHandler() {
+        respondTo(HttpMatchers.anyRequest()).withStatus(404).withHeader('Content-Type', 'text/plain').withBody("Resource not found")
+    }
 
     void handle(String uri, HttpServletRequest request, HttpServletResponse response, int dispatch) {
         def clientRequest = new ClientRequest(request)
