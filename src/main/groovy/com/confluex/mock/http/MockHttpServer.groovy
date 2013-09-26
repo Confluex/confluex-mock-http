@@ -39,7 +39,7 @@ class MockHttpServer {
         handler.respondTo(matcher)
     }
 
-    void waitFor(HttpRequestMatcher matcher, Long timeoutMs) {
+    boolean waitFor(HttpRequestMatcher matcher, Long timeoutMs) {
         waitFor(matcher, 1, timeoutMs)
     }
 
