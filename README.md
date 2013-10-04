@@ -31,11 +31,30 @@ no Groovy requirement (Groovy is great and you should really check it out though
 </dependency>
 ```
 
-### Gradle
+The artifacts are available in the [Maven Central Repository](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22confluex-mock-http%22).
 
-I have no idea :)
+### Manual
+
+If you need to add this to your project manually, you can download it directly from the maven central repository:
+
+[Download Jar](http://search.maven.org/remotecontent?filepath=com/confluex/confluex-mock-http/0.4.0/confluex-mock-http-0.4.0.jar)
+
 
 ## Example Usage
+
+### Useful Imports
+
+To achieve a fluid, readable API, [Hamcrest matchers](http://hamcrest.org/) are used. There are a few static imports
+which you'll likely want to use to maintain readability in your tests:
+
+```groovy
+
+import static javax.servlet.http.HttpServletResponse.*
+import static com.confluex.mock.http.matchers.HttpMatchers.*
+import static org.hamcrest.Matchers.*
+
+```
+
 
 ### Hello World
 
@@ -188,23 +207,6 @@ and its password is confluex.
 ```groovy
 
 MockHttpsServer server = new MockHttpsServer(443)
-
-```
-
-# Maven Information
-
-Maven Artifact:
-
-```xml
-<dependency>
-    <groupId>com.confluex</groupId>
-    <artifactId>confluex-mock-http</artifactId>
-    <version>0.3.0</version>
-    <scope>test</scope>
-</dependency>
-```
-
-The artifacts are available in the [Maven Central Repository](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22confluex-mock-http%22).
 
 # License
 
