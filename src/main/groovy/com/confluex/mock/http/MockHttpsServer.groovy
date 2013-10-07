@@ -35,12 +35,15 @@ class MockHttpsServer extends MockHttpServer {
     static SSLContext getClientSslContext() {
         SSLContext sslContext = SSLContext.getInstance('SSL')
 
+        sslContext.init(null, getTrustManagerFactory().getTrustManagers(), null)
+        return sslContext
+    }
+
+    static TrustManagerFactory getTrustManagerFactory() {
         KeyStore truststore = KeyStore.getInstance('JKS')
         truststore.load(new ClassPathResource('confluex-mock.keystore').inputStream, 'confluex'.toCharArray())
         TrustManagerFactory tmf = TrustManagerFactory.getInstance('SunX509')
         tmf.init(truststore)
-
-        sslContext.init(null, tmf.getTrustManagers(), null)
-        return sslContext
+        return tmf
     }
 }

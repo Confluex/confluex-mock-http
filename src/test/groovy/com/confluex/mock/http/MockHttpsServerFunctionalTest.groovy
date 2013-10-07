@@ -23,12 +23,12 @@ class MockHttpsServerFunctionalTest {
 
     @Test
     void sameFeaturesShouldWorkWithSsl() {
-        def server = new MockHttpsServer(8090)
+        def server = new MockHttpsServer()
         server.respondTo(path('/bar')).withStatus(302) // shouldn't get hit
         server.respondTo(path('/foo').and(queryParam('bar', 'baz'))).withBody('success')
 
 
-        ClientResponse response = sslClient.resource('https://localhost:8090/foo?bar=baz').get(ClientResponse.class)
+        ClientResponse response = sslClient.resource("https://localhost:${server.port}/foo?bar=baz").get(ClientResponse.class)
 
         server.stop()
 
