@@ -9,13 +9,14 @@ import org.mortbay.jetty.handler.AbstractHandler
 
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
+import java.util.concurrent.CopyOnWriteArrayList
 
 @Slf4j
 @ToString(includeNames = true, includes = "mappings, currentMapping")
 class MockHttpRequestHandler extends AbstractHandler {
     List<HttpRequestMatcher> matchers = []
     Map<HttpRequestMatcher, HttpResponder> responders = [:]
-    List<ClientRequest> requests = []
+    List<ClientRequest> requests = new CopyOnWriteArrayList<ClientRequest>()
     List<MatchingEventLatch> latches = []
 
     public MockHttpRequestHandler() {
