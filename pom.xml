@@ -46,6 +46,7 @@
     </distributionManagement>
     <properties>
         <sonar.language>grvy</sonar.language>
+        <sonar.sources>src/main/groovy</sonar.sources>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <jdk.version>1.7</jdk.version>
