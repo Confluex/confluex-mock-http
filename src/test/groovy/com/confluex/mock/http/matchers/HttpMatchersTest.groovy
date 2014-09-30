@@ -153,4 +153,30 @@ class HttpMatchersTest {
         assert HttpMatchers.stringHasXPath('/feed/entry/title', containsString('Dark Energy')).matches(xml)
         assert ! HttpMatchers.stringHasXPath('/feed/entry').matches('{ "docType": "json" }')
     }
+
+    @Test
+    void headShouldMatchHeadMethodAndPath() {
+        when(request.getMethod()).thenReturn('HEAD')
+        when(request.getPath()).thenReturn('/wp-admin/post.php')
+
+        assert HttpMatchers.head('/wp-admin/post.php').matches(request)
+        assert ! HttpMatchers.head('/wp-admin/edit.php').matches(request)
+
+        when(request.getMethod()).thenReturn('POST')
+
+        assert ! HttpMatchers.head('/wp-admin/post.php').matches(request)
+    }
+
+    @Test
+    void optionsShouldMatchOptionsMethodAndPath() {
+        when(request.getMethod()).thenReturn('OPTIONS')
+        when(request.getPath()).thenReturn('/wp-admin/post.php')
+
+        assert HttpMatchers.options('/wp-admin/post.php').matches(request)
+        assert ! HttpMatchers.options('/wp-admin/edit.php').matches(request)
+
+        when(request.getMethod()).thenReturn('POST')
+
+        assert ! HttpMatchers.options('/wp-admin/post.php').matches(request)
+    }
 }
