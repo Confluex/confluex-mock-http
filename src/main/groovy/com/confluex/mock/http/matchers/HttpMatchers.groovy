@@ -49,6 +49,30 @@ class HttpMatchers {
         get().and(path(pathMatcher))
     }
 
+    static HttpRequestMatcher head() {
+        method('HEAD')
+    }
+
+    static HttpRequestMatcher head(String requestPath) {
+        head().and(path(requestPath))
+    }
+
+    static HttpRequestMatcher head(Matcher<String> pathMatcher) {
+        head().and(path(pathMatcher))
+    }
+
+    static HttpRequestMatcher options() {
+        method('OPTIONS')
+    }
+
+    static HttpRequestMatcher options(String requestPath) {
+        options().and(path(requestPath))
+    }
+
+    static HttpRequestMatcher options(Matcher<String> pathMatcher) {
+        options().and(path(pathMatcher))
+    }
+
     static HttpRequestMatcher put() {
         method('PUT')
     }

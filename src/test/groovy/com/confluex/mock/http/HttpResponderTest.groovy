@@ -7,6 +7,8 @@ import org.mockito.Mock
 import org.mockito.runners.MockitoJUnitRunner
 import org.springframework.mock.web.MockHttpServletResponse
 
+import java.util.zip.GZIPInputStream
+
 import static org.mockito.Mockito.*
 
 @RunWith(MockitoJUnitRunner)
@@ -63,5 +65,15 @@ class HttpResponderTest {
 
         builder.responder.render(request, response)
         assert 'onetwothree' == response.getContentAsString()
+    }
+
+    @Test
+    void shouldUseCompressionWhenSpecifiedWithAsGzipped() {
+        String body = 'Can we fix it? Yes we can!'
+        builder.withBody(body).asGzipped()
+
+        builder.responder.render(request, response)
+
+        assert body == new GZIPInputStream(new ByteArrayInputStream(response.getContentAsByteArray())).text
     }
 }
